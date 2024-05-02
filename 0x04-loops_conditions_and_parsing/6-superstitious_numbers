@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# The script displays numbers from 1 to 20
+# and for particular iterations, it displays a message
+
+count=1
+while [ $count -le 20 ]
+do
+case $count in
+4)
+echo "$count bad luck from China"
+;;
+9)
+echo "$count bad luck from Japan"
+;;
+17)
+echo "$count bad luck from Italy"
+;;
+*)
+echo $count
+;;
+esac
+((count++))
+done
