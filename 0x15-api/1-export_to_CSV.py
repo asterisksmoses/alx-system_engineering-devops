@@ -3,6 +3,7 @@
 the employee's information about his/her TODO list progress."""
 
 
+import csv
 import requests
 import sys
 
@@ -21,13 +22,21 @@ def fetch_todo_data(employee_id):
     resp = requests.get(todos_url, params=params)
     return resp.json()
 
+def export_to_csv(employee_id, username, todos):
+    """This function exports data in the CSV format."""
+    file_name = f"{employee_id}.csv"
+    with open(file_name, mode='w', newline='') as file:
+        writer = csv.writer(file, quoting=csv.QUOTE_ALL)
+        for task in todos:
+            writer.writerow([employee_id, username, task.get('completed'), task.get('title')])
+
 
 def main():
     """This is the main function that handles the script logic."""
     if len(sys.argv) != 2:
         print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
         sys.exit(1)
-    
+
 
     try:
         employee_id = int(sys.argv[1])
@@ -38,6 +47,7 @@ def main():
     
     employee_data = fetch_emp_data(employee_id)
     employee_name = employee_data.get('name')
+    username = employee_data.get('username')
 
     
     if not employee_name:
@@ -54,6 +64,9 @@ def main():
     print("Employee {} is done with tasks({}/{}):".format(employee_name, number_of_done_tasks, total_tasks))
     for task in completed_tasks:
         print("     {}".format(task.get('title')))
+
+
+    export_to_csv(employee_id, username, todos_data)
 
 
 if __name__ == "__main__":
